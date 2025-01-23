@@ -10,6 +10,9 @@ select * from employee_demographics
 where first_name like '%er%';
 
 select * from employee_demographics
+where first_name like 'a__';
+
+select * from employee_demographics
 where birth_date like '1989%';
 
 select gender, count(gender) as num_genders, avg(age) as avg_age from employee_demographics
