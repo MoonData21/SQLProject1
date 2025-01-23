@@ -3,8 +3,7 @@ where birth_date > '1985-01-01'
 and gender = 'male';
 
 select * from employee_demographics
-where first_name = 'Leslie'
-and age = 44
+where (first_name = 'Leslie' and age = 44)
 or gender = 'male';
 
 select * from employee_demographics
