@@ -111,39 +111,42 @@ FROM employee_demographics;
 select first_name, last_name, age,
 case 
 	when age <= 30 then 'Young'
-    when age between 31 and 50 then 'Middle'
-    when age >= 50 then 'Old'
+	when age between 31 and 50 then 'Middle'
+	when age >= 50 then 'Old'
 end as age_bracket
 from employee_demographics;
 
--- Basically if they make less than 45k then they get a 5% raise - very generous
--- if they make more than 45k they get a 7% raise
+-- Basically if they make less than 50k then they get a 5% raise
+-- if they make more than 50k they get a 7% raise
 -- they get a bonus of 10% if they work for the Finance Department
 select first_name, last_name, salary, dept_id,
 case
-	when salary < 50000 then salary * 1.05
-    when salary >= 50000 then salary * 1.07
-    end as endyear_salary,
- case when dept_id = 6 then salary * .10
- end as bonus
+	when salary <= 50000 then salary * 1.05
+    	when salary >= 50000 then salary * 1.07
+    	end as endyear_salary,
+case 
+	when dept_id = 6 then salary * .10
+end as bonus
 from employee_salary;
 
 -- Subqueries (a query within a query)
 select * from employee_demographics
-where employee_id in (
-	select employee_id from employee_salary
-    where dept_id = 1);
-# an operand should only contain one column
+where employee_id in
+	(select employee_id from employee_salary
+	where dept_id = 1);
+--# an operand should only contain one column in a subquery
 
 select first_name, salary, 
-(select avg(salary) 
-	FROM employee_salary) as avg_salary from employee_salary;
-    
+	(select avg(salary) 
+	from employee_salary) as avg_salary 
+	from employee_salary;
+
+-- Another sub-query    
 SELECT gender, AVG(Min_age)
 FROM (SELECT gender, MIN(age) Min_age, MAX(age) Max_age, COUNT(age) Count_age, AVG(age) Avg_age
 FROM employee_demographics
-GROUP BY gender) AS Agg_Table
-GROUP BY gender;
+GROUP BY gender) AS Agg_Table;
+-- This query is incompatible with sql mode= full group by only. For it to work, the full group by only will have ot be turned off.
 
 -- Window Functions
 
@@ -172,7 +175,7 @@ join employee_salary sal
 -- It is particularly useful for recursive queries or queries that require referencing a higher level
 -- this is something we will look at in the next lesson/
 
--- Let's take a look at the basics of writing a CTE:
+-- CTE's have to be used immediately have they are created.
 
 -- First, CTEs start using a "With" Keyword. Now we get to name this CTE anything we want
 -- Then we say as and within the parenthesis we build our subquery/table we want
@@ -207,7 +210,7 @@ WHERE salary >= 50000
 SELECT *
 FROM CTE_Example cte1
 LEFT JOIN CTE_Example2 cte2
-	ON cte1. employee_id = cte2. employee_id;
+	ON cte1.employee_id = cte2.employee_id;
     
 -- the last thing I wanted to show you is that we can actually make our life easier by renaming the columns in the CTE
 -- let's take our very first CTE we made. We had to use tick marks because of the column names
